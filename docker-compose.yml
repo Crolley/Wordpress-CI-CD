@@ -3,11 +3,13 @@ version: "3.8"
 services:
   mariadb:
     image: mariadb
+    secrets:
+      - db_root_password
     environment:
-      MYSQL_ROOT_PASSWORD: wordpress
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpress
+      MYSQL_PASSWORD_FILE: /run/secrets/db_root_password
     volumes:
       - mariadb-data:/var/lib/mysql
 
@@ -15,15 +17,23 @@ services:
     image: bitnami/wordpress
     ports:
       - "8080:8080"
+    secrets:
+      - wp_password
     environment:
       WORDPRESS_DATABASE_HOST: mariadb
       WORDPRESS_DATABASE_NAME: wordpress
       WORDPRESS_DATABASE_USER: wordpress
-      WORDPRESS_DATABASE_PASSWORD: wordpress
+      WORDPRESS_DATABASE_PASSWORD_FILE: /run/secrets/wp_password
     depends_on:
       - mariadb
     volumes:
       - wordpress-data:/bitnami/wordpress
+
+secrets:
+  wp_password:
+    file: ./secrets/wp_password.txt
+  db_root_password:
+    file: ./secrets/db_root_password.txt
 
 volumes:
   mariadb-data:
