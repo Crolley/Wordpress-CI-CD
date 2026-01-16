@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.38.0 (HEAD)
+  labels:
+    io.kompose.service: wordpress
+  name: wordpress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: wordpress
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.38.0 (HEAD)
+      labels:
+        io.kompose.service: wordpress
+    spec:
+      containers:
+        - env:
+            - name: WORDPRESS_DATABASE_HOST
+              value: mariadb
+            - name: WORDPRESS_DATABASE_NAME
+              value: wordpress
+            - name: WORDPRESS_DATABASE_PASSWORD
+              value: wordpress
+            - name: WORDPRESS_DATABASE_USER
+              value: wordpress
+          image: bitnami/wordpress
+          name: wordpress
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /bitnami/wordpress
+              name: wordpress-data
+      restartPolicy: Always
+      volumes:
+        - name: wordpress-data
+          persistentVolumeClaim:
+            claimName: wordpress-data

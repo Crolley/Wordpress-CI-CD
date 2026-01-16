@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  mariadb:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: wordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    volumes:
+      - mariadb-data:/var/lib/mysql
+
+  wordpress:
+    image: bitnami/wordpress
+    ports:
+      - "8080:8080"
+    environment:
+      WORDPRESS_DATABASE_HOST: mariadb
+      WORDPRESS_DATABASE_NAME: wordpress
+      WORDPRESS_DATABASE_USER: wordpress
+      WORDPRESS_DATABASE_PASSWORD: wordpress
+    depends_on:
+      - mariadb
+    volumes:
+      - wordpress-data:/bitnami/wordpress
+
+volumes:
+  mariadb-data:
+  wordpress-data:

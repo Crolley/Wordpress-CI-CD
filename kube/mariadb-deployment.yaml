@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.38.0 (HEAD)
+  labels:
+    io.kompose.service: mariadb
+  name: mariadb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: mariadb
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.38.0 (HEAD)
+      labels:
+        io.kompose.service: mariadb
+    spec:
+      containers:
+        - env:
+            - name: MYSQL_DATABASE
+              value: wordpress
+            - name: MYSQL_PASSWORD
+              value: wordpress
+            - name: MYSQL_ROOT_PASSWORD
+              value: wordpress
+            - name: MYSQL_USER
+              value: wordpress
+          image: mariadb
+          name: mariadb
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: mariadb-data
+      restartPolicy: Always
+      volumes:
+        - name: mariadb-data
+          persistentVolumeClaim:
+            claimName: mariadb-data
