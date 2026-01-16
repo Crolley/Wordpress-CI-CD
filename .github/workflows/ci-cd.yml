@@ -41,3 +41,5 @@ jobs:
           password: Passtemp26
           server-dir: RenduDevopsKube/
           local-dir: ./
+          include: |
+            CabanelLucienWordpress.zip
